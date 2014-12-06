@@ -18,7 +18,7 @@ func M(h Handler) Handler {
 }
 
 type handlerWrapper struct {
-	hh http.Handler
+	hh        http.Handler
 	mandatory bool
 }
 
