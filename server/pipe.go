@@ -7,11 +7,6 @@ type pipe struct {
 	quit     bool
 }
 
-type pipeWriter struct {
-	p *pipe
-	http.ResponseWriter
-}
-
 func newPipe(handlers ...Handler) *pipe {
 	return &pipe{handlers: handlers}
 }
@@ -27,6 +22,11 @@ func (p *pipe) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		pw := newPipeWriter(p, w)
 		h.ServeHTTP(pw, r)
 	}
+}
+
+type pipeWriter struct {
+	p *pipe
+	http.ResponseWriter
 }
 
 func newPipeWriter(p *pipe, w http.ResponseWriter) *pipeWriter {
