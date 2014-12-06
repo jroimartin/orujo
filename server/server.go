@@ -42,14 +42,3 @@ func (s *Server) Route(path string, handlers ...Handler) *Route {
 func (r *Route) Methods(methods ...string) *Route {
 	return r.Methods(methods...)
 }
-
-type Handler interface {
-	SetMandatory(v bool)
-	Mandatory() bool
-	ServeHTTP(rw http.ResponseWriter, r *http.Request)
-}
-
-func M(h Handler) Handler {
-	h.SetMandatory(true)
-	return h
-}
