@@ -19,7 +19,6 @@ func main() {
 		"{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}"))
 
 	s.Route("/hello/{name}", server.H(http.HandlerFunc(helloHandler)), logHandler)
-	s.Route("/test", server.H(http.HandlerFunc(testHandler)), logHandler)
 
 	log.Fatalln(s.ListenAndServe())
 }
@@ -27,9 +26,4 @@ func main() {
 func helloHandler(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	fmt.Fprintln(rw, "Hello,", vars["name"])
-}
-
-func testHandler(rw http.ResponseWriter, r *http.Request) {
-	rw.WriteHeader(http.StatusUnauthorized)
-	fmt.Fprintln(rw, "401 unauthorized")
 }
