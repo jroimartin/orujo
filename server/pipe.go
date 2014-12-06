@@ -16,6 +16,8 @@ func newPipe(handlers ...Handler) *pipe {
 }
 
 func (p *pipe) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	p.quit = false
+
 	for _, h := range p.handlers {
 		if h == nil {
 			continue
