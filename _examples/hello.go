@@ -1,3 +1,7 @@
+// Copyright 2014 The gorest Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 package main
 
 import (
@@ -14,7 +18,7 @@ import (
 func main() {
 	s := server.NewServer("localhost:8080")
 
-	logger := log.New(os.Stdout, "[SERVER] ", log.LstdFlags)
+	logger := log.New(os.Stdout, "[HELLO] ", log.LstdFlags)
 	logHandler := server.M(restlog.NewLogHandler(logger,
 		"{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}"))
 

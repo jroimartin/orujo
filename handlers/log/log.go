@@ -1,3 +1,7 @@
+// Copyright 2014 The gorest Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 package log
 
 import (
@@ -5,8 +9,6 @@ import (
 	"log"
 	"net/http"
 	"text/template"
-
-	"github.com/jroimartin/gorest/server"
 )
 
 type LogHandler struct {
@@ -15,7 +17,7 @@ type LogHandler struct {
 	mandatory bool
 }
 
-func NewLogHandler(logger *log.Logger, fmt string) server.Handler {
+func NewLogHandler(logger *log.Logger, fmt string) *LogHandler {
 	tmpl := template.Must(template.New("fmt").Parse(fmt))
 	return &LogHandler{log: logger, tmpl: tmpl}
 }
