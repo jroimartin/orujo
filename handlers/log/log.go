@@ -30,11 +30,11 @@ func (h *LogHandler) Mandatory() bool {
 	return h.mandatory
 }
 
-func (h *LogHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+func (h *LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	data := struct {
 		Resp http.ResponseWriter
 		Req  *http.Request
-	}{rw, r}
+	}{w, r}
 
 	var out bytes.Buffer
 	h.tmpl.Execute(&out, data)

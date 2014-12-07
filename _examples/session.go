@@ -21,24 +21,30 @@ func main() {
 	s := server.NewServer("localhost:8080")
 
 	logger := log.New(os.Stdout, "[SESSION] ", log.LstdFlags)
-	logHandler := server.M(restlog.NewLogHandler(logger,
-		"{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}"))
+	logHandler := restlog.NewLogHandler(logger,
+		"{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}")
 	sessionHandler = sessions.NewSessionHandler("gorest", []byte("secret"))
 
 	s.Route("/",
 		sessionHandler,
 		server.H(http.HandlerFunc(homeHandler)),
-		logHandler,
+		server.M(logHandler),
 	)
 
 	log.Fatalln(s.ListenAndServe())
 }
 
-func homeHandler(rw http.ResponseWriter, r *http.Request) {
+func homeHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId, err := sessionHandler.SessionId(r)
+	// TODO(jrm): Pass errors between handlers
 	if err != nil {
-		http.Error(rw, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		internalServerError(w)
 		return
 	}
-	fmt.Fprintln(rw, "SessionID:", sessionId)
+	fmt.Fprintln(w, "SessionID:", sessionId)
+}
+
+func internalServerError(w http.ResponseWriter) {
+	status := http.StatusInternalServerError
+	http.Error(w, http.StatusText(status), status)
 }

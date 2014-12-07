@@ -9,7 +9,7 @@ import "net/http"
 type Handler interface {
 	SetMandatory(v bool)
 	Mandatory() bool
-	ServeHTTP(rw http.ResponseWriter, r *http.Request)
+	ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
 
 func M(h Handler) Handler {
@@ -30,8 +30,8 @@ func (hw *handlerWrapper) SetMandatory(v bool) {
 	hw.mandatory = v
 }
 
-func (hw *handlerWrapper) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	hw.hh.ServeHTTP(rw, r)
+func (hw *handlerWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	hw.hh.ServeHTTP(w, r)
 }
 
 func H(hh http.Handler) Handler {

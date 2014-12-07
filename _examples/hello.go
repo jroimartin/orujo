@@ -19,15 +19,18 @@ func main() {
 	s := server.NewServer("localhost:8080")
 
 	logger := log.New(os.Stdout, "[HELLO] ", log.LstdFlags)
-	logHandler := server.M(restlog.NewLogHandler(logger,
-		"{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}"))
+	logHandler := restlog.NewLogHandler(logger,
+		"{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}")
 
-	s.Route("/hello/{name}", server.H(http.HandlerFunc(helloHandler)), logHandler)
+	s.Route("/hello/{name}",
+		server.H(http.HandlerFunc(helloHandler)),
+		server.M(logHandler),
+	)
 
 	log.Fatalln(s.ListenAndServe())
 }
 
-func helloHandler(rw http.ResponseWriter, r *http.Request) {
+func helloHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	fmt.Fprintln(rw, "Hello,", vars["name"])
+	fmt.Fprintln(w, "Hello,", vars["name"])
 }

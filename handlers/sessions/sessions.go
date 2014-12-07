@@ -1,4 +1,3 @@
-// Copyright 2014 The gorest Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -34,23 +33,24 @@ func (h *SessionHandler) Mandatory() bool {
 	return h.mandatory
 }
 
-func (h *SessionHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+func (h *SessionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if _, err := h.SessionId(r); err == nil {
 		return
 	}
+	// TODO(jrm): Pass errors between handlers
 	session, err := h.cookieStore.Get(r, h.sessionName)
 	if err != nil {
-		http.Error(rw, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		internalServerError(w)
 		return
 	}
 	sessionId, err := randomString()
 	if err != nil {
-		http.Error(rw, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		internalServerError(w)
 		return
 	}
 	session.Values["id"] = sessionId
-	if err := session.Save(r, rw); err != nil {
-		http.Error(rw, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	if err := session.Save(r, w); err != nil {
+		internalServerError(w)
 		return
 	}
 }
@@ -65,6 +65,11 @@ func (h *SessionHandler) SessionId(r *http.Request) (string, error) {
 		return "", errors.New("Session ID is not a string")
 	}
 	return sessionId, nil
+}
+
+func internalServerError(w http.ResponseWriter) {
+	status := http.StatusInternalServerError
+	http.Error(w, http.StatusText(status), status)
 }
 
 func randomString() (string, error) {
