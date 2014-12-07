@@ -10,6 +10,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/sessions"
+	"github.com/jroimartin/gorest/server"
 )
 
 type SessionHandler struct {
@@ -18,11 +19,21 @@ type SessionHandler struct {
 	mandatory   bool
 }
 
+type Options sessions.Options
+
 func NewSessionHandler(name string, secret []byte) *SessionHandler {
 	h := &SessionHandler{}
 	h.sessionName = name
 	h.cookieStore = sessions.NewCookieStore(secret)
 	return h
+}
+
+func (h *SessionHandler) SetOptions(opts *Options) {
+	h.cookieStore.Options = (*sessions.Options)(opts)
+}
+
+func (h *SessionHandler) Options() *Options {
+	return (*Options)(h.cookieStore.Options)
 }
 
 func (h *SessionHandler) SetMandatory(v bool) {
@@ -37,21 +48,27 @@ func (h *SessionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if _, err := h.SessionId(r); err == nil {
 		return
 	}
-	// TODO(jrm): Pass errors between handlers
+	pw, isPipeWriter := w.(*server.PipeWriter)
 	session, err := h.cookieStore.Get(r, h.sessionName)
 	if err != nil {
 		internalServerError(w)
-		return
+		if isPipeWriter {
+			pw.AppendError(err)
+		}
 	}
 	sessionId, err := randomString()
 	if err != nil {
 		internalServerError(w)
-		return
+		if isPipeWriter {
+			pw.AppendError(err)
+		}
 	}
 	session.Values["id"] = sessionId
 	if err := session.Save(r, w); err != nil {
 		internalServerError(w)
-		return
+		if isPipeWriter {
+			pw.AppendError(err)
+		}
 	}
 }
 

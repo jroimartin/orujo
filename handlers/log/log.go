@@ -9,6 +9,8 @@ import (
 	"log"
 	"net/http"
 	"text/template"
+
+	"github.com/jroimartin/gorest/server"
 )
 
 type LogHandler struct {
@@ -31,10 +33,18 @@ func (h *LogHandler) Mandatory() bool {
 }
 
 func (h *LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	var errors []error
+
+	pw, isPipeWriter := w.(*server.PipeWriter)
+	if isPipeWriter {
+		errors = pw.Errors()
+	}
+
 	data := struct {
-		Resp http.ResponseWriter
-		Req  *http.Request
-	}{w, r}
+		Resp   http.ResponseWriter
+		Req    *http.Request
+		Errors []error
+	}{w, r, errors}
 
 	var out bytes.Buffer
 	h.tmpl.Execute(&out, data)

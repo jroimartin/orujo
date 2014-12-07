@@ -16,14 +16,22 @@ import (
 )
 
 var sessionHandler *sessions.SessionHandler
+const logLine = `{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}"
+{{range  $err := .Errors}}  Err: {{$err}}
+{{end}}`
 
 func main() {
 	s := server.NewServer("localhost:8080")
 
 	logger := log.New(os.Stdout, "[SESSION] ", log.LstdFlags)
-	logHandler := restlog.NewLogHandler(logger,
-		"{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}")
+	logHandler := restlog.NewLogHandler(logger, logLine)
+
 	sessionHandler = sessions.NewSessionHandler("gorest", []byte("secret"))
+	sessionHandler.SetOptions(&sessions.Options{
+		Path:     "/",
+		MaxAge:   3600,
+		HttpOnly: true,
+	})
 
 	s.Route("/",
 		sessionHandler,
@@ -35,11 +43,14 @@ func main() {
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
+	pw, isPipeWriter := w.(*server.PipeWriter)
+
 	sessionId, err := sessionHandler.SessionId(r)
-	// TODO(jrm): Pass errors between handlers
 	if err != nil {
 		internalServerError(w)
-		return
+		if isPipeWriter {
+			pw.AppendError(err)
+		}
 	}
 	fmt.Fprintln(w, "SessionID:", sessionId)
 }
