@@ -43,14 +43,10 @@ func main() {
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
-	pw, isPipeWriter := w.(*server.PipeWriter)
-
 	sessionId, err := sessionHandler.SessionId(r)
 	if err != nil {
 		internalServerError(w)
-		if isPipeWriter {
-			pw.AppendError(err)
-		}
+		server.RegisterError(w, err)
 	}
 	fmt.Fprintln(w, "SessionID:", sessionId)
 }

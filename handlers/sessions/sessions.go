@@ -48,27 +48,20 @@ func (h *SessionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if _, err := h.SessionId(r); err == nil {
 		return
 	}
-	pw, isPipeWriter := w.(*server.PipeWriter)
 	session, err := h.cookieStore.Get(r, h.sessionName)
 	if err != nil {
 		internalServerError(w)
-		if isPipeWriter {
-			pw.AppendError(err)
-		}
+		server.RegisterError(w, err)
 	}
 	sessionId, err := randomString()
 	if err != nil {
 		internalServerError(w)
-		if isPipeWriter {
-			pw.AppendError(err)
-		}
+		server.RegisterError(w, err)
 	}
 	session.Values["id"] = sessionId
 	if err := session.Save(r, w); err != nil {
 		internalServerError(w)
-		if isPipeWriter {
-			pw.AppendError(err)
-		}
+		server.RegisterError(w, err)
 	}
 }
 

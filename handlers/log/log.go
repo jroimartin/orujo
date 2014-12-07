@@ -33,13 +33,7 @@ func (h *LogHandler) Mandatory() bool {
 }
 
 func (h *LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	var errors []error
-
-	pw, isPipeWriter := w.(*server.PipeWriter)
-	if isPipeWriter {
-		errors = pw.Errors()
-	}
-
+	errors := server.Errors(w)
 	data := struct {
 		Resp   http.ResponseWriter
 		Req    *http.Request

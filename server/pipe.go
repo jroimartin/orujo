@@ -32,24 +32,32 @@ func (p *pipe) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-type PipeWriter struct {
+type pipeWriter struct {
 	p *pipe
 	http.ResponseWriter
 }
 
-func newPipeWriter(p *pipe, w http.ResponseWriter) *PipeWriter {
-	return &PipeWriter{p: p, ResponseWriter: w}
+func newPipeWriter(p *pipe, w http.ResponseWriter) *pipeWriter {
+	return &pipeWriter{p: p, ResponseWriter: w}
 }
 
-func (pw *PipeWriter) WriteHeader(code int) {
+func (pw *pipeWriter) WriteHeader(code int) {
 	pw.p.quit = true
 	pw.ResponseWriter.WriteHeader(code)
 }
 
-func (pw *PipeWriter) AppendError(err error) {
+func RegisterError(w http.ResponseWriter, err error) {
+	pw, isPipeWriter := w.(*pipeWriter)
+	if !isPipeWriter || err == nil {
+		return
+	}
 	pw.p.errors = append(pw.p.errors, err)
 }
 
-func (pw *PipeWriter) Errors() []error {
-	return pw.p.errors
+func Errors(w http.ResponseWriter) []error {
+	pw, isPipeWriter := w.(*pipeWriter)
+	if isPipeWriter {
+		return pw.p.errors
+	}
+	return nil
 }
