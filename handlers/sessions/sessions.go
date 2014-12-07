@@ -35,7 +35,6 @@ func (h *SessionHandler) Mandatory() bool {
 }
 
 func (h *SessionHandler) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	http.Error(rw, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	if _, err := h.SessionId(r); err == nil {
 		return
 	}
