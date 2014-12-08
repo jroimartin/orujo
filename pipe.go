@@ -7,9 +7,7 @@ package gorest
 import "net/http"
 
 type pipe struct {
-	errors   []error
 	handlers []Handler
-	quit     bool
 }
 
 func newPipe(handlers ...Handler) *pipe {
@@ -17,33 +15,44 @@ func newPipe(handlers ...Handler) *pipe {
 }
 
 func (p *pipe) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	p.quit = false
-	p.errors = make([]error, 0)
+	ctx := newPipeContext()
 
 	for _, h := range p.handlers {
 		if h == nil {
 			continue
 		}
-		if p.quit && !h.Mandatory() {
+		if ctx.quit && !h.Mandatory() {
 			continue
 		}
-		pw := newPipeWriter(p, w)
+		pw := newPipeWriter(ctx, w)
 		h.ServeHTTP(pw, r)
 	}
 }
 
 type pipeWriter struct {
-	p *pipe
+	ctx *pipeContext
 	http.ResponseWriter
 }
 
-func newPipeWriter(p *pipe, w http.ResponseWriter) *pipeWriter {
-	return &pipeWriter{p: p, ResponseWriter: w}
+func newPipeWriter(ctx *pipeContext, w http.ResponseWriter) *pipeWriter {
+	return &pipeWriter{ctx: ctx, ResponseWriter: w}
 }
 
 func (pw *pipeWriter) WriteHeader(code int) {
-	pw.p.quit = true
+	pw.ctx.quit = true
 	pw.ResponseWriter.WriteHeader(code)
+}
+
+type pipeContext struct {
+	errors   []error
+	quit     bool
+}
+
+func newPipeContext() *pipeContext {
+	ctx := &pipeContext{}
+	ctx.quit = false
+	ctx.errors = make([]error, 0)
+	return ctx
 }
 
 // RegisterError can be used by Handlers to register errors.
@@ -52,7 +61,7 @@ func RegisterError(w http.ResponseWriter, err error) {
 	if !isPipeWriter || err == nil {
 		return
 	}
-	pw.p.errors = append(pw.p.errors, err)
+	pw.ctx.errors = append(pw.ctx.errors, err)
 }
 
 // Errors is used to retrieve the errors registered via RegisterError()
@@ -60,7 +69,7 @@ func RegisterError(w http.ResponseWriter, err error) {
 func Errors(w http.ResponseWriter) []error {
 	pw, isPipeWriter := w.(*pipeWriter)
 	if isPipeWriter {
-		return pw.p.errors
+		return pw.ctx.errors
 	}
 	return nil
 }
