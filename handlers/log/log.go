@@ -38,11 +38,11 @@ type LogHandler struct {
 // The template will be executed passing the following
 // structure:
 //
-// struct {
-//     Resp   http.ResponseWriter
-//     Req    *http.Request
-//     Errors []error
-// }
+//     struct {
+//         Resp   http.ResponseWriter
+//         Req    *http.Request
+//         Errors []error
+//     }
 //
 // This way, the LogHandler has access to the
 // http.ResponseWriter, the http.Request and a errors slice
@@ -50,11 +50,11 @@ type LogHandler struct {
 // pipe execution.
 //
 // E.g.:
-// const logLine = `{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}
-// {{range  $err := .Errors}}  Err: {{$err}}
-// {{end}}`
-// logger := log.New(os.Stdout, "[SESSION] ", log.LstdFlags)
-// logHandler := restlog.NewLogHandler(logger, logLine)
+//     const logLine = `{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}
+//     {{range  $err := .Errors}}  Err: {{$err}}
+//     {{end}}`
+//     logger := log.New(os.Stdout, "[SESSION] ", log.LstdFlags)
+//     logHandler := restlog.NewLogHandler(logger, logLine)
 func NewLogHandler(logger *log.Logger, fmt string) *LogHandler {
 	tmpl := template.Must(template.New("fmt").Parse(fmt))
 	return &LogHandler{log: logger, tmpl: tmpl}
