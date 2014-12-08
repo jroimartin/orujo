@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gorilla/mux"
 	"github.com/jroimartin/gorest"
 	restlog "github.com/jroimartin/gorest/handlers/log"
 )
@@ -31,6 +30,6 @@ func main() {
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
+	vars := gorest.Vars(r)
 	fmt.Fprintln(w, "Hello,", vars["name"])
 }

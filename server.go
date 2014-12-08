@@ -66,3 +66,8 @@ func (s *Server) Route(path string, handlers ...Handler) *Route {
 func (r *Route) Methods(methods ...string) *Route {
 	return r.Methods(methods...)
 }
+
+// Var returns the route variables for the current request, if any.
+func Vars(r *http.Request) map[string]string {
+	return mux.Vars(r)
+}
