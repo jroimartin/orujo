@@ -16,7 +16,7 @@ import (
 )
 
 var sessionHandler *sessions.SessionHandler
-const logLine = `{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}"
+const logLine = `{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}
 {{range  $err := .Errors}}  Err: {{$err}}
 {{end}}`
 

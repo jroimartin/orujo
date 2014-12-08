@@ -13,7 +13,7 @@ type Handler interface {
 	// a Handler.
 	SetMandatory(v bool)
 
-	// Mandatory returns if a Handler is mandatory or not.
+	// Mandatory returns if a Handler is mandatory.
 	Mandatory() bool
 
 	// ServeHTTP implements the Handler's functionality.
