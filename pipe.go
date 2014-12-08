@@ -44,8 +44,8 @@ func (pw *pipeWriter) WriteHeader(code int) {
 }
 
 type pipeContext struct {
-	errors   []error
-	quit     bool
+	errors []error
+	quit   bool
 }
 
 func newPipeContext() *pipeContext {
