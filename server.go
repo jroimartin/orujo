@@ -5,7 +5,7 @@
 /*
 Package server allows to create REST services.
 */
-package server
+package gorest
 
 import (
 	"net/http"

@@ -12,19 +12,19 @@ import (
 
 	"github.com/gorilla/mux"
 	restlog "github.com/jroimartin/gorest/handlers/log"
-	"github.com/jroimartin/gorest/server"
+	"github.com/jroimartin/gorest"
 )
 
 func main() {
-	s := server.NewServer("localhost:8080")
+	s := gorest.NewServer("localhost:8080")
 
 	logger := log.New(os.Stdout, "[HELLO] ", log.LstdFlags)
 	logHandler := restlog.NewLogHandler(logger,
 		"{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}")
 
 	s.Route("/hello/{name}",
-		server.H(http.HandlerFunc(helloHandler)),
-		server.M(logHandler),
+		gorest.H(http.HandlerFunc(helloHandler)),
+		gorest.M(logHandler),
 	)
 
 	log.Fatalln(s.ListenAndServe())

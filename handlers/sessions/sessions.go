@@ -10,7 +10,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/sessions"
-	"github.com/jroimartin/gorest/server"
+	"github.com/jroimartin/gorest"
 )
 
 type SessionHandler struct {
@@ -51,17 +51,17 @@ func (h *SessionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	session, err := h.cookieStore.Get(r, h.sessionName)
 	if err != nil {
 		internalServerError(w)
-		server.RegisterError(w, err)
+		gorest.RegisterError(w, err)
 	}
 	sessionId, err := randomString()
 	if err != nil {
 		internalServerError(w)
-		server.RegisterError(w, err)
+		gorest.RegisterError(w, err)
 	}
 	session.Values["id"] = sessionId
 	if err := session.Save(r, w); err != nil {
 		internalServerError(w)
-		server.RegisterError(w, err)
+		gorest.RegisterError(w, err)
 	}
 }
 

@@ -12,7 +12,7 @@ import (
 
 	restlog "github.com/jroimartin/gorest/handlers/log"
 	"github.com/jroimartin/gorest/handlers/sessions"
-	"github.com/jroimartin/gorest/server"
+	"github.com/jroimartin/gorest"
 )
 
 var sessionHandler *sessions.SessionHandler
@@ -21,7 +21,7 @@ const logLine = `{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}"
 {{end}}`
 
 func main() {
-	s := server.NewServer("localhost:8080")
+	s := gorest.NewServer("localhost:8080")
 
 	logger := log.New(os.Stdout, "[SESSION] ", log.LstdFlags)
 	logHandler := restlog.NewLogHandler(logger, logLine)
@@ -35,8 +35,8 @@ func main() {
 
 	s.Route("/",
 		sessionHandler,
-		server.H(http.HandlerFunc(homeHandler)),
-		server.M(logHandler),
+		gorest.H(http.HandlerFunc(homeHandler)),
+		gorest.M(logHandler),
 	)
 
 	log.Fatalln(s.ListenAndServe())
@@ -46,7 +46,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId, err := sessionHandler.SessionId(r)
 	if err != nil {
 		internalServerError(w)
-		server.RegisterError(w, err)
+		gorest.RegisterError(w, err)
 	}
 	fmt.Fprintln(w, "SessionID:", sessionId)
 }

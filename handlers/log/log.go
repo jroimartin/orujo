@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"text/template"
 
-	"github.com/jroimartin/gorest/server"
+	"github.com/jroimartin/gorest"
 )
 
 type LogHandler struct {
@@ -33,7 +33,7 @@ func (h *LogHandler) Mandatory() bool {
 }
 
 func (h *LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	errors := server.Errors(w)
+	errors := gorest.Errors(w)
 	data := struct {
 		Resp   http.ResponseWriter
 		Req    *http.Request
