@@ -1,6 +1,11 @@
+// Copyright 2014 The gorest Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+/*
+Package sessions implements the bult-in sessions handler of
+gorest.
+*/
 package sessions
 
 import (
@@ -13,14 +18,23 @@ import (
 	"github.com/jroimartin/gorest"
 )
 
+// A SessionHandler is a gorest built-in handler that provides
+// session management features.
 type SessionHandler struct {
 	sessionName string
 	cookieStore *sessions.CookieStore
 	mandatory   bool
 }
 
+// An Options object contains the properties of the cookie that
+// will be used to store the user session. See the
+// documentation of the package "github.com/gorilla/sessions"
+// for details.
 type Options sessions.Options
 
+// NewSessionHandler allocates and returns a new SessionHandler.
+// name is used to set the sesion name. secret is used to specify
+// the key used to authenticate the session.
 func NewSessionHandler(name string, secret []byte) *SessionHandler {
 	h := &SessionHandler{}
 	h.sessionName = name
@@ -28,22 +42,31 @@ func NewSessionHandler(name string, secret []byte) *SessionHandler {
 	return h
 }
 
+// SetOptions sets the options for the cookie that will store
+// the user session.
 func (h *SessionHandler) SetOptions(opts *Options) {
 	h.cookieStore.Options = (*sessions.Options)(opts)
 }
 
+// Options retrieves the options of the cookie that stores
+// the user session.
 func (h *SessionHandler) Options() *Options {
 	return (*Options)(h.cookieStore.Options)
 }
 
+// SetMandatory allows to set the SessionHandler as mandatory
+// or optional.
 func (h *SessionHandler) SetMandatory(v bool) {
 	h.mandatory = v
 }
 
+// Mandatory returns if the SessionHandler is mandatory.
 func (h *SessionHandler) Mandatory() bool {
 	return h.mandatory
 }
 
+// ServeHTTP generates a new session id if the user does not own one
+// yet.
 func (h *SessionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if _, err := h.SessionId(r); err == nil {
 		return
@@ -65,6 +88,7 @@ func (h *SessionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// SessionId retrieves the session id of the current user.
 func (h *SessionHandler) SessionId(r *http.Request) (string, error) {
 	cookie, err := h.cookieStore.Get(r, h.sessionName)
 	if err != nil {

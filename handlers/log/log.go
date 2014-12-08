@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package log implements the bult-in logging handler of gorest
+Package log implements the bult-in logging handler of gorest.
 */
 package log
 
@@ -17,7 +17,7 @@ import (
 )
 
 // A LogHandler is a gorest built-in handler that provides
-// logging facilities.
+// logging features.
 type LogHandler struct {
 	log       *log.Logger
 	tmpl      *template.Template
@@ -60,7 +60,8 @@ func NewLogHandler(logger *log.Logger, fmt string) *LogHandler {
 	return &LogHandler{log: logger, tmpl: tmpl}
 }
 
-// SetMandatory allows to set the LogHandler as mandatory or optional.
+// SetMandatory allows to set the LogHandler as mandatory or
+// optional.
 func (h *LogHandler) SetMandatory(v bool) {
 	h.mandatory = v
 }
