@@ -11,8 +11,8 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
-	restlog "github.com/jroimartin/gorest/handlers/log"
 	"github.com/jroimartin/gorest"
+	restlog "github.com/jroimartin/gorest/handlers/log"
 )
 
 func main() {

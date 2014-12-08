@@ -10,12 +10,13 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/jroimartin/gorest"
 	restlog "github.com/jroimartin/gorest/handlers/log"
 	"github.com/jroimartin/gorest/handlers/sessions"
-	"github.com/jroimartin/gorest"
 )
 
 var sessionHandler *sessions.SessionHandler
+
 const logLine = `{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}
 {{range  $err := .Errors}}  Err: {{$err}}
 {{end}}`
