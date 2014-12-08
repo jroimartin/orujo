@@ -6,12 +6,21 @@ package server
 
 import "net/http"
 
+// Objects imeplementing the Handler interface can be used
+// as part of a handlers pipe.
 type Handler interface {
+	// SetMandatory allows to set the "mandatory" property of
+	// a Handler.
 	SetMandatory(v bool)
+
+	// Mandatory returns if a Handler is mandatory or not.
 	Mandatory() bool
+
+	// ServeHTTP implements the Handler's functionality.
 	ServeHTTP(w http.ResponseWriter, r *http.Request)
 }
 
+// M is a helper to easily set a Handler as "mandatory".
 func M(h Handler) Handler {
 	h.SetMandatory(true)
 	return h
@@ -34,6 +43,7 @@ func (hw *handlerWrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	hw.hh.ServeHTTP(w, r)
 }
 
+// H is a helper to convert a http.Handler to a REST Handler.
 func H(hh http.Handler) Handler {
 	return &handlerWrapper{hh: hh, mandatory: false}
 }

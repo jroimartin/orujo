@@ -46,6 +46,7 @@ func (pw *pipeWriter) WriteHeader(code int) {
 	pw.ResponseWriter.WriteHeader(code)
 }
 
+// RegisterError can be used by Handlers to register errors.
 func RegisterError(w http.ResponseWriter, err error) {
 	pw, isPipeWriter := w.(*pipeWriter)
 	if !isPipeWriter || err == nil {
@@ -54,6 +55,8 @@ func RegisterError(w http.ResponseWriter, err error) {
 	pw.p.errors = append(pw.p.errors, err)
 }
 
+// Errors is used to retrieve the errors registered via RegisterError()
+// during the execution of the handlers pipe.
 func Errors(w http.ResponseWriter) []error {
 	pw, isPipeWriter := w.(*pipeWriter)
 	if isPipeWriter {
