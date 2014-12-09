@@ -61,6 +61,12 @@ func (s *Server) Route(path string, handlers ...Handler) *Route {
 	return (*Route)(s.router.Handle(path, newPipe(handlers...)))
 }
 
+// RouteDefault sets the default route. This route is used if no routes
+// match the request URI.
+func (s *Server) RouteDefault(handlers ...Handler) {
+	s.router.NotFoundHandler = newPipe(handlers...)
+}
+
 // Methods allows to filter which HTTP methods will be handled by a given
 // route. e.g.: "GET", "POST", "PUT", etc.
 func (r *Route) Methods(methods ...string) *Route {

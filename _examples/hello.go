@@ -21,6 +21,11 @@ func main() {
 	logHandler := gorest.M(restlog.NewLogHandler(logger,
 		"{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}"))
 
+	s.RouteDefault(
+		gorest.H(http.NotFoundHandler()),
+		logHandler,
+	)
+
 	s.Route("/hello/{name}",
 		gorest.H(http.HandlerFunc(helloHandler)),
 		logHandler,
