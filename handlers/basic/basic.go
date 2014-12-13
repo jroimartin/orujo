@@ -21,10 +21,9 @@ import (
 // A BasicHandler is a gorest built-in handler that provides
 // basic authentication.
 type BasicHandler struct {
-	realm     string
-	username  string
-	password  string
-	mandatory bool
+	realm    string
+	username string
+	password string
 }
 
 // NewBasicHandler allocates and returns a new BasicHandler.
@@ -34,17 +33,6 @@ func NewBasicHandler(realm, username, password string) *BasicHandler {
 		username: username,
 		password: password,
 	}
-}
-
-// SetMandatory allows to set the BasicHandler as mandatory
-// or optional.
-func (h *BasicHandler) SetMandatory(v bool) {
-	h.mandatory = v
-}
-
-// Mandatory returns if the BasicHandler is mandatory.
-func (h *BasicHandler) Mandatory() bool {
-	return h.mandatory
 }
 
 // ServeHTTP validates the username and password provided by the user.

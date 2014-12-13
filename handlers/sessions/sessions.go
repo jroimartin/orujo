@@ -23,7 +23,6 @@ import (
 type SessionHandler struct {
 	sessionName string
 	cookieStore *sessions.CookieStore
-	mandatory   bool
 }
 
 // An Options object contains the properties of the cookie that
@@ -52,17 +51,6 @@ func (h *SessionHandler) SetOptions(opts *Options) {
 // the user session.
 func (h *SessionHandler) Options() *Options {
 	return (*Options)(h.cookieStore.Options)
-}
-
-// SetMandatory allows to set the SessionHandler as mandatory
-// or optional.
-func (h *SessionHandler) SetMandatory(v bool) {
-	h.mandatory = v
-}
-
-// Mandatory returns if the SessionHandler is mandatory.
-func (h *SessionHandler) Mandatory() bool {
-	return h.mandatory
 }
 
 // ServeHTTP generates a new session id if the user does not own one

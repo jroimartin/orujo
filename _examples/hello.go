@@ -18,17 +18,17 @@ func main() {
 	s := gorest.NewServer("localhost:8080")
 
 	logger := log.New(os.Stdout, "[HELLO] ", log.LstdFlags)
-	logHandler := gorest.M(restlog.NewLogHandler(logger,
-		"{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}"))
+	logHandler := restlog.NewLogHandler(logger,
+		"{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}")
 
 	s.RouteDefault(
-		gorest.H(http.NotFoundHandler()),
-		logHandler,
+		http.NotFoundHandler(),
+		gorest.M(logHandler),
 	)
 
 	s.Route("/hello/{name}",
-		gorest.H(http.HandlerFunc(helloHandler)),
-		logHandler,
+		http.HandlerFunc(helloHandler),
+		gorest.M(logHandler),
 	)
 
 	log.Fatalln(s.ListenAndServe())

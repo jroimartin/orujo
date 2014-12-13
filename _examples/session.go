@@ -25,7 +25,7 @@ func main() {
 	s := gorest.NewServer("localhost:8080")
 
 	logger := log.New(os.Stdout, "[SESSION] ", log.LstdFlags)
-	logHandler := gorest.M(restlog.NewLogHandler(logger, logLine))
+	logHandler := restlog.NewLogHandler(logger, logLine)
 
 	sessionHandler = sessions.NewSessionHandler("gorest", []byte("secret"))
 	sessionHandler.SetOptions(&sessions.Options{
@@ -35,9 +35,9 @@ func main() {
 	})
 
 	s.Route("/",
-		sessionHandler,
-		gorest.H(http.HandlerFunc(homeHandler)),
-		logHandler,
+		gorest.M(sessionHandler),
+		http.HandlerFunc(homeHandler),
+		gorest.M(logHandler),
 	)
 
 	log.Fatalln(s.ListenAndServe())

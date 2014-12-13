@@ -57,13 +57,13 @@ type Route mux.Route
 // The handlers pipe is executed sequentially until a HTTP header is
 // explicitally written in the response. Besides that, mandatory handlers
 // are always executed.
-func (s *Server) Route(path string, handlers ...Handler) *Route {
+func (s *Server) Route(path string, handlers ...http.Handler) *Route {
 	return (*Route)(s.router.Handle(path, newPipe(handlers...)))
 }
 
 // RouteDefault sets the default route. This route is used if no routes
 // match the request URI.
-func (s *Server) RouteDefault(handlers ...Handler) {
+func (s *Server) RouteDefault(handlers ...http.Handler) {
 	s.router.NotFoundHandler = newPipe(handlers...)
 }
 

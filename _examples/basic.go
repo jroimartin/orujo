@@ -23,19 +23,19 @@ func main() {
 	s := gorest.NewServer("localhost:8080")
 
 	logger := log.New(os.Stdout, "[HELLO] ", log.LstdFlags)
-	logHandler := gorest.M(restlog.NewLogHandler(logger, logLine))
+	logHandler := restlog.NewLogHandler(logger, logLine)
 
-	basicHandler := gorest.M(basic.NewBasicHandler("hello", "user", "password123"))
+	basicHandler := basic.NewBasicHandler("hello", "user", "password123")
 
 	s.Route("/hello_auth/{name}",
-		basicHandler,
-		gorest.H(http.HandlerFunc(helloHandler)),
-		logHandler,
+		gorest.M(basicHandler),
+		http.HandlerFunc(helloHandler),
+		gorest.M(logHandler),
 	)
 
 	s.Route("/hello/{name}",
-		gorest.H(http.HandlerFunc(helloHandler)),
-		logHandler,
+		http.HandlerFunc(helloHandler),
+		gorest.M(logHandler),
 	)
 
 	log.Fatalln(s.ListenAndServe())

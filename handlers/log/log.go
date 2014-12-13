@@ -19,9 +19,8 @@ import (
 // A LogHandler is a gorest built-in handler that provides
 // logging features.
 type LogHandler struct {
-	log       *log.Logger
-	tmpl      *template.Template
-	mandatory bool
+	log  *log.Logger
+	tmpl *template.Template
 }
 
 // NewLogHandler allocates and returns a new LogHandler. It
@@ -58,17 +57,6 @@ type LogHandler struct {
 func NewLogHandler(logger *log.Logger, fmt string) *LogHandler {
 	tmpl := template.Must(template.New("fmt").Parse(fmt))
 	return &LogHandler{log: logger, tmpl: tmpl}
-}
-
-// SetMandatory allows to set the LogHandler as mandatory or
-// optional.
-func (h *LogHandler) SetMandatory(v bool) {
-	h.mandatory = v
-}
-
-// Mandatory returns if the LogHandler is mandatory.
-func (h *LogHandler) Mandatory() bool {
-	return h.mandatory
 }
 
 // ServeHTTP will execute the log template when the handler is used.
