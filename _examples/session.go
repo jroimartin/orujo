@@ -15,7 +15,7 @@ import (
 	"github.com/jroimartin/gorest/handlers/sessions"
 )
 
-var sessionHandler *sessions.SessionHandler
+var sessionHandler sessions.SessionHandler
 
 const logLine = `{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}
 {{range  $err := .Errors}}  Err: {{$err}}
