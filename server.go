@@ -61,8 +61,8 @@ func (s *Server) Route(path string, handlers ...http.Handler) *Route {
 	return (*Route)(s.router.Handle(path, newPipe(handlers...)))
 }
 
-// RouteDefault sets the default route. This route is used if no routes
-// match the request URI.
+// RouteDefault sets the default route. This handler is used if any other
+// route matches the request URI.
 func (s *Server) RouteDefault(handlers ...http.Handler) {
 	s.router.NotFoundHandler = newPipe(handlers...)
 }
@@ -73,7 +73,7 @@ func (r *Route) Methods(methods ...string) *Route {
 	return r.Methods(methods...)
 }
 
-// Var returns the route variables for the current request, if any.
+// Vars returns the route variables for the current request, if any.
 func Vars(r *http.Request) map[string]string {
 	return mux.Vars(r)
 }

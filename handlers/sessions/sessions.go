@@ -56,7 +56,7 @@ func (h *SessionHandler) Options() *Options {
 // ServeHTTP generates a new session id if the user does not own one
 // yet.
 func (h *SessionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if _, err := h.SessionId(r); err == nil {
+	if _, err := h.SessionID(r); err == nil {
 		return
 	}
 	session, err := h.cookieStore.Get(r, h.sessionName)
@@ -64,29 +64,29 @@ func (h *SessionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		internalServerError(w)
 		gorest.RegisterError(w, err)
 	}
-	sessionId, err := randomString()
+	sessionID, err := randomString()
 	if err != nil {
 		internalServerError(w)
 		gorest.RegisterError(w, err)
 	}
-	session.Values["id"] = sessionId
+	session.Values["id"] = sessionID
 	if err := session.Save(r, w); err != nil {
 		internalServerError(w)
 		gorest.RegisterError(w, err)
 	}
 }
 
-// SessionId retrieves the session id of the current user.
-func (h *SessionHandler) SessionId(r *http.Request) (string, error) {
+// SessionID retrieves the session id of the current user.
+func (h *SessionHandler) SessionID(r *http.Request) (string, error) {
 	cookie, err := h.cookieStore.Get(r, h.sessionName)
 	if err != nil {
 		return "", err
 	}
-	sessionId, ok := cookie.Values["id"].(string)
+	sessionID, ok := cookie.Values["id"].(string)
 	if !ok {
 		return "", errors.New("Session ID is not a string")
 	}
-	return sessionId, nil
+	return sessionID, nil
 }
 
 func internalServerError(w http.ResponseWriter) {
