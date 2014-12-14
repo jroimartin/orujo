@@ -89,4 +89,8 @@ func TestVars(t *testing.T) {
 		t.Errorf("Vars(%s)=%s; want=%s",
 			"id", result["id"], want["id"])
 	}
+	if result["non-existent"] != "" {
+		t.Errorf("Vars(%s)=%s; want=",
+			"non-existent", result["non-existent"])
+	}
 }
