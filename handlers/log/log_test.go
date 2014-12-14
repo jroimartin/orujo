@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-func TestBasic(t *testing.T) {
+func TestLog(t *testing.T) {
 	logLine := `{{.Req.Method}} {{.Req.URL.Path}}`
 	want := "[LOG] GET /h1\n"
 

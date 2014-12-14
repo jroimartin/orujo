@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func TestBasic(t *testing.T) {
+func TestSession(t *testing.T) {
 	h := NewSessionHandler("test", []byte("secret"))
 
 	rec := httptest.NewRecorder()
