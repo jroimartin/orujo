@@ -37,7 +37,7 @@ func TestPipeQuit(t *testing.T) {
 	}
 	p.ServeHTTP(rec, req)
 	if result != want {
-		t.Errorf("newPipe(h1, h2, h3)=%s; want=%s", result, want)
+		t.Errorf("Pipe(h1, h2, h3)=%s; want=%s", result, want)
 	}
 }
 
@@ -66,7 +66,7 @@ func TestPipeMandatory(t *testing.T) {
 	}
 	p.ServeHTTP(rec, req)
 	if result != want {
-		t.Errorf("newPipe(h1, h2, h3)=%s; want=%s", result, want)
+		t.Errorf("Pipe(h1, h2, M(h3))=%s; want=%s", result, want)
 	}
 }
 
