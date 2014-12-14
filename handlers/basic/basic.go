@@ -26,9 +26,9 @@ type BasicHandler struct {
 	password string
 }
 
-// NewBasicHandler allocates and returns a new BasicHandler.
-func NewBasicHandler(realm, username, password string) *BasicHandler {
-	return &BasicHandler{
+// NewBasicHandler returns a new BasicHandler.
+func NewBasicHandler(realm, username, password string) BasicHandler {
+	return BasicHandler{
 		realm:    realm,
 		username: username,
 		password: password,
@@ -36,7 +36,7 @@ func NewBasicHandler(realm, username, password string) *BasicHandler {
 }
 
 // ServeHTTP validates the username and password provided by the user.
-func (h *BasicHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h BasicHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	isValid, provUser := h.isValidAuth(r.Header.Get("Authorization"))
 	if isValid {
 		return
@@ -48,7 +48,7 @@ func (h *BasicHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	gorest.RegisterError(w, errorStr)
 }
 
-func (h *BasicHandler) isValidAuth(auth string) (valid bool, username string) {
+func (h BasicHandler) isValidAuth(auth string) (valid bool, username string) {
 	b64auth := strings.Split(auth, " ")
 	if len(b64auth) != 2 || b64auth[0] != "Basic" {
 		return false, "unknown"

@@ -23,10 +23,10 @@ type LogHandler struct {
 	tmpl *template.Template
 }
 
-// NewLogHandler allocates and returns a new LogHandler. It
-// accepts a log.Logger, that will be used to write the
-// generated log records using the format specified by the
-// argument fmt.
+// NewLogHandler returns a new LogHandler. It accepts a
+// log.Logger, that will be used to write the generated
+// log records using the format specified by the argument
+// fmt.
 //
 // fmt must be a valid text template, which is parsed when
 // NewLogHandler is called. Note that if fmt is not valid,
@@ -54,13 +54,13 @@ type LogHandler struct {
 //     {{end}}`
 //     logger := log.New(os.Stdout, "[SESSION] ", log.LstdFlags)
 //     logHandler := restlog.NewLogHandler(logger, logLine)
-func NewLogHandler(logger *log.Logger, fmt string) *LogHandler {
+func NewLogHandler(logger *log.Logger, fmt string) LogHandler {
 	tmpl := template.Must(template.New("fmt").Parse(fmt))
-	return &LogHandler{log: logger, tmpl: tmpl}
+	return LogHandler{log: logger, tmpl: tmpl}
 }
 
 // ServeHTTP will execute the log template when the handler is used.
-func (h *LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	errors := gorest.Errors(w)
 	data := struct {
 		Resp   http.ResponseWriter

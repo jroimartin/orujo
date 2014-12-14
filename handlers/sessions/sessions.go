@@ -31,31 +31,31 @@ type SessionHandler struct {
 // for details.
 type Options sessions.Options
 
-// NewSessionHandler allocates and returns a new SessionHandler.
-// name is used to set the sesion name. secret is used to specify
+// NewSessionHandler returns a new SessionHandler. name is
+// used to set the sesion name. secret is used to specify
 // the key used to authenticate the session.
-func NewSessionHandler(name string, secret []byte) *SessionHandler {
-	h := &SessionHandler{}
-	h.sessionName = name
-	h.cookieStore = sessions.NewCookieStore(secret)
-	return h
+func NewSessionHandler(name string, secret []byte) SessionHandler {
+	return SessionHandler{
+		sessionName: name,
+		cookieStore: sessions.NewCookieStore(secret),
+	}
 }
 
 // SetOptions sets the options for the cookie that will store
 // the user session.
-func (h *SessionHandler) SetOptions(opts *Options) {
+func (h SessionHandler) SetOptions(opts *Options) {
 	h.cookieStore.Options = (*sessions.Options)(opts)
 }
 
 // Options retrieves the options of the cookie that stores
 // the user session.
-func (h *SessionHandler) Options() *Options {
+func (h SessionHandler) Options() *Options {
 	return (*Options)(h.cookieStore.Options)
 }
 
 // ServeHTTP generates a new session id if the user does not own one
 // yet.
-func (h *SessionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h SessionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if _, err := h.SessionID(r); err == nil {
 		return
 	}
@@ -77,7 +77,7 @@ func (h *SessionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // SessionID retrieves the session id of the current user.
-func (h *SessionHandler) SessionID(r *http.Request) (string, error) {
+func (h SessionHandler) SessionID(r *http.Request) (string, error) {
 	cookie, err := h.cookieStore.Get(r, h.sessionName)
 	if err != nil {
 		return "", err

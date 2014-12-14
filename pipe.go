@@ -62,11 +62,11 @@ type pipeWriter struct {
 	http.ResponseWriter
 }
 
-func newPipeWriter(ctx *pipeContext, w http.ResponseWriter) *pipeWriter {
-	return &pipeWriter{ctx: ctx, ResponseWriter: w}
+func newPipeWriter(ctx *pipeContext, w http.ResponseWriter) pipeWriter {
+	return pipeWriter{ctx: ctx, ResponseWriter: w}
 }
 
-func (pw *pipeWriter) WriteHeader(code int) {
+func (pw pipeWriter) WriteHeader(code int) {
 	pw.ctx.quit = true
 	pw.ResponseWriter.WriteHeader(code)
 }
@@ -78,7 +78,7 @@ func M(h http.Handler) http.Handler {
 
 // RegisterError can be used by Handlers to register errors.
 func RegisterError(w http.ResponseWriter, err error) {
-	pw, isPipeWriter := w.(*pipeWriter)
+	pw, isPipeWriter := w.(pipeWriter)
 	if !isPipeWriter || err == nil {
 		return
 	}
@@ -88,7 +88,7 @@ func RegisterError(w http.ResponseWriter, err error) {
 // Errors is used to retrieve the errors registered via RegisterError()
 // during the execution of the handlers pipe.
 func Errors(w http.ResponseWriter) []error {
-	pw, isPipeWriter := w.(*pipeWriter)
+	pw, isPipeWriter := w.(pipeWriter)
 	if isPipeWriter {
 		return pw.ctx.errors
 	}
