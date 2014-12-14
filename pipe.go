@@ -31,8 +31,8 @@ type pipe struct {
 	handlers []pipeHandler
 }
 
-func newPipe(handlers ...http.Handler) *pipe {
-	p := &pipe{}
+func newPipe(handlers ...http.Handler) pipe {
+	var p pipe
 	p.handlers = make([]pipeHandler, 0)
 	for _, h := range handlers {
 		var ph pipeHandler
@@ -45,7 +45,7 @@ func newPipe(handlers ...http.Handler) *pipe {
 	return p
 }
 
-func (p *pipe) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (p pipe) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := newPipeContext()
 
 	for _, ph := range p.handlers {
