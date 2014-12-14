@@ -44,7 +44,7 @@ func main() {
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
-	sessionId, err := sessionHandler.SessionId(r)
+	sessionId, err := sessionHandler.SessionID(r)
 	if err != nil {
 		internalServerError(w)
 		gorest.RegisterError(w, err)
