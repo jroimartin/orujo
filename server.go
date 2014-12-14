@@ -69,7 +69,8 @@ func (s Server) RouteDefault(handlers ...http.Handler) {
 // Methods allows to filter which HTTP methods will be handled by a given
 // route. e.g.: "GET", "POST", "PUT", etc.
 func (r *Route) Methods(methods ...string) *Route {
-	return r.Methods(methods...)
+	mr := (*mux.Route)(r)
+	return (*Route)(mr.Methods(methods...))
 }
 
 // Vars returns the route variables for the current request, if any.
