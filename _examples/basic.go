@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/jroimartin/gorest"
 	"github.com/jroimartin/gorest/handlers/basic"
@@ -27,13 +28,13 @@ func main() {
 
 	basicHandler := basic.NewBasicHandler("hello", "user", "password123")
 
-	s.Route("/hello_auth/{name}",
+	s.Route(`/hello_auth/\w+`,
 		gorest.M(basicHandler),
 		http.HandlerFunc(helloHandler),
 		gorest.M(logHandler),
 	)
 
-	s.Route("/hello/{name}",
+	s.Route(`/hello/\w+`,
 		http.HandlerFunc(helloHandler),
 		gorest.M(logHandler),
 	)
@@ -42,6 +43,7 @@ func main() {
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	vars := gorest.Vars(r)
-	fmt.Fprintln(w, "Hello,", vars["name"])
+	idx := strings.LastIndexAny(r.URL.Path, "/") + 1
+	name := r.URL.Path[idx:]
+	fmt.Fprintln(w, "Hello,", name)
 }

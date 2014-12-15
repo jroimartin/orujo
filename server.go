@@ -4,11 +4,7 @@
 
 package gorest
 
-import (
-	"net/http"
-
-	"github.com/gorilla/mux"
-)
+import "net/http"
 
 // A Server represents an HTTP server that will be used to serve the
 // REST service.
@@ -19,7 +15,7 @@ type Server struct {
 	Addr string
 
 	mux    *http.ServeMux
-	router *mux.Router
+	router *router
 }
 
 // NewServer returns a new Sever that will listen on addr.
@@ -27,7 +23,7 @@ func NewServer(addr string) Server {
 	var s Server
 	s.Addr = addr
 	s.mux = http.NewServeMux()
-	s.router = mux.NewRouter()
+	s.router = newRouter()
 	s.mux.Handle("/", s.router)
 	return s
 }
@@ -45,35 +41,22 @@ func (s Server) ListenAndServeTLS(certFile string, keyFile string) error {
 	return http.ListenAndServeTLS(s.Addr, certFile, keyFile, s.mux)
 }
 
-// A Route represents a REST route.
-type Route mux.Route
-
 // Route registers a new route for the specified URL path and allows to
 // register the handlers pipe that will be used to handle the requests
-// to that resource. For more information about the path syntax see the
-// documentation of the package "github.com/gorilla/mux".
+// to that resource.
+//
+// path is a regular expression and will panic if it cannot be compiled.
+// See the documentation of the package regexp.
 //
 // The handlers pipe is executed sequentially until a HTTP header is
 // explicitally written in the response. Besides that, mandatory handlers
 // are always executed.
 func (s Server) Route(path string, handlers ...http.Handler) *Route {
-	return (*Route)(s.router.Handle(path, newPipe(handlers...)))
+	return s.router.handle(path, newPipe(handlers...))
 }
 
 // RouteDefault sets the default route. This handler is used if any other
 // route matches the request URI.
 func (s Server) RouteDefault(handlers ...http.Handler) {
-	s.router.NotFoundHandler = newPipe(handlers...)
-}
-
-// Methods allows to filter which HTTP methods will be handled by a given
-// route. e.g.: "GET", "POST", "PUT", etc.
-func (r *Route) Methods(methods ...string) *Route {
-	mr := (*mux.Route)(r)
-	return (*Route)(mr.Methods(methods...))
-}
-
-// Vars returns the route variables for the current request, if any.
-func Vars(r *http.Request) map[string]string {
-	return mux.Vars(r)
+	s.router.defaultRoute = newPipe(handlers...)
 }

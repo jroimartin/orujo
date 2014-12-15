@@ -6,34 +6,13 @@ package gorest
 
 import "net/http"
 
-type pipeHandler struct {
-	handler   http.Handler
-	mandatory bool
-}
-
-func (h pipeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	h.handler.ServeHTTP(w, r)
-}
-
-type pipeContext struct {
-	errors []error
-	quit   bool
-}
-
-func newPipeContext() *pipeContext {
-	ctx := &pipeContext{}
-	ctx.quit = false
-	ctx.errors = make([]error, 0)
-	return ctx
-}
-
 type pipe struct {
 	handlers []pipeHandler
 }
 
 func newPipe(handlers ...http.Handler) pipe {
 	var p pipe
-	p.handlers = make([]pipeHandler, 0)
+	p.handlers = []pipeHandler{}
 	for _, h := range handlers {
 		var ph pipeHandler
 		ph, isPipeHandler := h.(pipeHandler)
@@ -52,18 +31,39 @@ func (p pipe) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if ctx.quit && !ph.mandatory {
 			continue
 		}
-		pw := newPipeWriter(ctx, w)
+		pw := newPipeWriter(w, ctx)
 		ph.handler.ServeHTTP(pw, r)
 	}
 }
 
-type pipeWriter struct {
-	ctx *pipeContext
-	http.ResponseWriter
+type pipeHandler struct {
+	handler   http.Handler
+	mandatory bool
 }
 
-func newPipeWriter(ctx *pipeContext, w http.ResponseWriter) pipeWriter {
-	return pipeWriter{ctx: ctx, ResponseWriter: w}
+func (h pipeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	h.handler.ServeHTTP(w, r)
+}
+
+type pipeContext struct {
+	errors []error
+	quit   bool
+}
+
+func newPipeContext() *pipeContext {
+	ctx := &pipeContext{}
+	ctx.quit = false
+	ctx.errors = []error{}
+	return ctx
+}
+
+type pipeWriter struct {
+	http.ResponseWriter
+	ctx *pipeContext
+}
+
+func newPipeWriter(w http.ResponseWriter, ctx *pipeContext) pipeWriter {
+	return pipeWriter{ResponseWriter: w, ctx: ctx}
 }
 
 func (pw pipeWriter) WriteHeader(code int) {

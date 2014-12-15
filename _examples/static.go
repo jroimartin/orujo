@@ -5,11 +5,9 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/jroimartin/gorest"
 	restlog "github.com/jroimartin/gorest/handlers/log"
@@ -22,21 +20,12 @@ func main() {
 	logHandler := restlog.NewLogHandler(logger,
 		"{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}")
 
-	s.RouteDefault(
-		http.NotFoundHandler(),
-		gorest.M(logHandler),
-	)
+	staticHandler := http.StripPrefix("/static/", http.FileServer(http.Dir(".")))
 
-	s.Route(`/hello/\w+`,
-		http.HandlerFunc(helloHandler),
+	s.Route("/static/.*",
+		staticHandler,
 		gorest.M(logHandler),
 	)
 
 	log.Fatalln(s.ListenAndServe())
-}
-
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	idx := strings.LastIndexAny(r.URL.Path, "/") + 1
-	name := r.URL.Path[idx:]
-	fmt.Fprintln(w, "Hello,", name)
 }
