@@ -21,8 +21,11 @@ func TestServer(t *testing.T) {
 	}{
 		{"/h1", "GET", []byte("h1")},
 		{"/h1", "POST", []byte("h1")},
-		{"/h1", "PUT", []byte("h2")},
+		{"/h1", "PUT", []byte("h3")},
 		{"/h2", "GET", []byte("h2")},
+		{"/h2", "POST", []byte("h2")},
+		{"/h2", "PUT", []byte("h2")},
+		{"/unk", "GET", []byte("h3")},
 	}
 
 	h1 := func(w http.ResponseWriter, r *http.Request) {
@@ -31,10 +34,14 @@ func TestServer(t *testing.T) {
 	h2 := func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("h2"))
 	}
+	h3 := func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("h3"))
+	}
 
 	s := NewServer("")
 	s.Route("/h1", http.HandlerFunc(h1)).Methods("GET", "POST")
-	s.RouteDefault(http.HandlerFunc(h2))
+	s.Route("/h2", http.HandlerFunc(h2))
+	s.RouteDefault(http.HandlerFunc(h3))
 	ts := httptest.NewServer(s.mux)
 
 	for _, check := range checks {
