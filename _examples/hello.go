@@ -9,7 +9,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/jroimartin/gorest"
 	restlog "github.com/jroimartin/gorest/handlers/log"
@@ -36,7 +35,6 @@ func main() {
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	idx := strings.LastIndexAny(r.URL.Path, "/") + 1
-	name := r.URL.Path[idx:]
-	fmt.Fprintln(w, "Hello,", name)
+	vars := gorest.Vars(r, `/hello/(?P<name>\w+)`)
+	fmt.Fprintln(w, "Hello,", vars["name"])
 }

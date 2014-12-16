@@ -67,3 +67,27 @@ func (rt *Route) matchesMethod(method string) bool {
 	}
 	return false
 }
+
+// Vars can be used to extract variable names and values from
+// the requested URI based on a regular expression.
+func Vars(r *http.Request, expr string) map[string]string {
+	re, err := regexp.Compile(expr)
+	if err != nil {
+		return nil
+	}
+
+	match := re.FindStringSubmatch(r.URL.Path)
+	if match == nil {
+		return nil
+	}
+
+	vars := make(map[string]string)
+	for i, name := range re.SubexpNames() {
+		if name == "" {
+			continue
+		}
+		vars[name] = match[i]
+	}
+
+	return vars
+}
