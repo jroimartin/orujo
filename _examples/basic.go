@@ -27,13 +27,8 @@ func main() {
 
 	basicHandler := basic.NewBasicHandler("hello", "user", "password123")
 
-	s.Route(`/hello_auth/\w+`,
-		gorest.M(basicHandler),
-		http.HandlerFunc(helloHandler),
-		gorest.M(logHandler),
-	)
-
 	s.Route(`/hello/\w+`,
+		gorest.M(basicHandler),
 		http.HandlerFunc(helloHandler),
 		gorest.M(logHandler),
 	)
@@ -42,6 +37,6 @@ func main() {
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	vars := gorest.Vars(r, `/.*?/(?P<name>\w+)`)
+	vars := gorest.Vars(r, `/hello/(?P<name>\w+)`)
 	fmt.Fprintln(w, "Hello,", vars["name"])
 }

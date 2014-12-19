@@ -8,33 +8,16 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/jroimartin/gorest"
-	restlog "github.com/jroimartin/gorest/handlers/log"
 )
 
 func main() {
 	s := gorest.NewServer("localhost:8080")
 
-	logger := log.New(os.Stdout, "[HELLO] ", log.LstdFlags)
-	logHandler := restlog.NewLogHandler(logger,
-		"{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}")
-
-	s.RouteDefault(
-		http.NotFoundHandler(),
-		gorest.M(logHandler),
-	)
-
-	s.Route(`/hello/\w+`,
-		http.HandlerFunc(helloHandler),
-		gorest.M(logHandler),
-	)
+	s.Route("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, "Hello world!")
+	}))
 
 	log.Fatalln(s.ListenAndServe())
-}
-
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	vars := gorest.Vars(r, `/hello/(?P<name>\w+)`)
-	fmt.Fprintln(w, "Hello,", vars["name"])
 }
