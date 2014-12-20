@@ -60,5 +60,5 @@ func (h BasicHandler) isValidAuth(r *http.Request) (valid bool, username string)
 	passSha256 := sha256.Sum256([]byte(h.password))
 	validPass := subtle.ConstantTimeCompare(provPassSha256[:], passSha256[:]) == 1
 
-	return validUser && validPass, provPass
+	return validUser && validPass, provUser
 }
