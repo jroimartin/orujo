@@ -10,10 +10,8 @@ package basic
 import (
 	"crypto/sha256"
 	"crypto/subtle"
-	"encoding/base64"
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/jroimartin/orujo"
 )
@@ -37,7 +35,7 @@ func NewBasicHandler(realm, username, password string) BasicHandler {
 
 // ServeHTTP validates the username and password provided by the user.
 func (h BasicHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	isValid, provUser := h.isValidAuth(r.Header.Get("Authorization"))
+	isValid, provUser := h.isValidAuth(r)
 	if isValid {
 		return
 	}
@@ -48,27 +46,19 @@ func (h BasicHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	orujo.RegisterError(w, errorStr)
 }
 
-func (h BasicHandler) isValidAuth(auth string) (valid bool, username string) {
-	b64auth := strings.Split(auth, " ")
-	if len(b64auth) != 2 || b64auth[0] != "Basic" {
-		return false, "unknown"
-	}
-	creds, err := base64.StdEncoding.DecodeString(b64auth[1])
-	if err != nil {
-		return false, "unknown"
-	}
-	userpass := strings.Split(string(creds), ":")
-	if len(userpass) != 2 {
+func (h BasicHandler) isValidAuth(r *http.Request) (valid bool, username string) {
+	provUser, provPass, ok := r.BasicAuth()
+	if !ok {
 		return false, "unknown"
 	}
 
-	provUserSha256 := sha256.Sum256([]byte(userpass[0]))
+	provUserSha256 := sha256.Sum256([]byte(provUser))
 	userSha256 := sha256.Sum256([]byte(h.username))
 	validUser := subtle.ConstantTimeCompare(provUserSha256[:], userSha256[:]) == 1
 
-	provPassSha256 := sha256.Sum256([]byte(userpass[1]))
+	provPassSha256 := sha256.Sum256([]byte(provPass))
 	passSha256 := sha256.Sum256([]byte(h.password))
 	validPass := subtle.ConstantTimeCompare(provPassSha256[:], passSha256[:]) == 1
 
-	return validUser && validPass, userpass[0]
+	return validUser && validPass, provPass
 }
