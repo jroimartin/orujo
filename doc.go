@@ -8,24 +8,24 @@ has been designed to work seamlessly with the standard
 net/http library. A simple hello world would look like the
 following snippet:
 
-package main
+	package main
 
-import (
-	"fmt"
-	"log"
-	"net/http"
+	import (
+		"fmt"
+		"log"
+		"net/http"
 
-	"github.com/jroimartin/orujo"
-)
+		"github.com/jroimartin/orujo"
+	)
 
-func main() {
-	s := orujo.NewServer("localhost:8080")
+	func main() {
+		s := orujo.NewServer("localhost:8080")
 
-	s.Route("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "Hello world!")
-	}))
+		s.Route("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprintln(w, "Hello world!")
+		}))
 
-	log.Fatalln(s.ListenAndServe())
-}
+		log.Fatalln(s.ListenAndServe())
+	}
 */
 package orujo
