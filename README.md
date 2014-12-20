@@ -57,15 +57,15 @@ Let me answer both questions with a single example:
 
 ```go
 s := NewServer("localhost:8080")
-s.Route("/hello/\w+",
+s.Route(`/hello/\w+`,
 	basicHandler,
-	rootHandler,
+	http.HandlerFunc(helloHandler),
 	orujo.M(logHandler),
-).Methods("GET", "POST")
+)
 ```
 
 In this example we are registering a new route, defined by the
-[regular expresion](http://golang.org/pkg/regexp/) "/hello/\w+" and the valid
+[regular expresion](http://golang.org/pkg/regexp/) `/hello/\w+` and the valid
 HTTP methods "GET" and "POST". Besides that, this route is also linked to the
 following pipe of handlers:
 

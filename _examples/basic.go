@@ -28,7 +28,7 @@ func main() {
 	basicHandler := basic.NewBasicHandler("hello", "user", "password123")
 
 	s.Route(`/hello/\w+`,
-		orujo.M(basicHandler),
+		basicHandler,
 		http.HandlerFunc(helloHandler),
 		orujo.M(logHandler),
 	)
