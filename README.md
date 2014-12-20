@@ -43,7 +43,7 @@ Some of the first questions that come to my mind are the following:
 Let me answer both questions with a single example:
 
 ```go
-s := NewServer("localhost:8080")
+s := orujo.NewServer("localhost:8080")
 s.Route(`/hello/\w+`,
 	authHandler,
 	myHandler,
