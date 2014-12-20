@@ -70,8 +70,7 @@ the helper function M().
 
 One of the main goals behind Orujo is standarization. Due to this, the handlers
 accepted by Orujo must satisfy the interface http.Handler. This way, everything
-that already wotks with the Go's standard library must work with Orujo. For
-instance, the Orujo's logging handler only implements the method ServeHTTP:
+that already works with the Go's standard library must work with Orujo.
 
 ```go
 func (h LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
