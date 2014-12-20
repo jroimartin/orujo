@@ -1,16 +1,16 @@
-// Copyright 2014 The gorest Authors. All rights reserved.
+// Copyright 2014 The orujo Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package gorest
+package orujo
 
 import "net/http"
 
 // A Server represents an HTTP server that will be used to serve the
-// REST service.
+// web service.
 type Server struct {
 	// Addr allows to configure the TCP network address used by the
-	// REST service. It must be set before calling ListenAndServe or
+	// web service. It must be set before calling ListenAndServe or
 	// ListenAndServeTLS.
 	Addr string
 

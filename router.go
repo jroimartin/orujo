@@ -1,8 +1,8 @@
-// Copyright 2014 The gorest Authors. All rights reserved.
+// Copyright 2014 The orujo Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package gorest
+package orujo
 
 import (
 	"net/http"
@@ -38,7 +38,8 @@ func (rtr *router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	rtr.defaultRoute.ServeHTTP(w, r)
 }
 
-// A Route represents a REST route.
+// A Route establishes the relation between requests and the handlers that must
+// be called when a request matches it.
 type Route struct {
 	re      *regexp.Regexp
 	methods []string
@@ -69,7 +70,7 @@ func (rt *Route) matchesMethod(method string) bool {
 }
 
 // Vars can be used to extract variable names and values from
-// the requested URI based on a regular expression.
+// the requested URL based on a regular expression.
 func Vars(r *http.Request, expr string) map[string]string {
 	re, err := regexp.Compile(expr)
 	if err != nil {

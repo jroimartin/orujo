@@ -1,10 +1,10 @@
-// Copyright 2014 The gorest Authors. All rights reserved.
+// Copyright 2014 The orujo Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
 /*
 Package sessions implements the bult-in sessions handler of
-gorest.
+orujo.
 */
 package sessions
 
@@ -15,10 +15,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/sessions"
-	"github.com/jroimartin/gorest"
+	"github.com/jroimartin/orujo"
 )
 
-// A SessionHandler is a gorest built-in handler that provides
+// A SessionHandler is a orujo built-in handler that provides
 // session management features.
 type SessionHandler struct {
 	sessionName string
@@ -62,17 +62,17 @@ func (h SessionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	session, err := h.cookieStore.Get(r, h.sessionName)
 	if err != nil {
 		internalServerError(w)
-		gorest.RegisterError(w, err)
+		orujo.RegisterError(w, err)
 	}
 	sessionID, err := randomString()
 	if err != nil {
 		internalServerError(w)
-		gorest.RegisterError(w, err)
+		orujo.RegisterError(w, err)
 	}
 	session.Values["id"] = sessionID
 	if err := session.Save(r, w); err != nil {
 		internalServerError(w)
-		gorest.RegisterError(w, err)
+		orujo.RegisterError(w, err)
 	}
 }
 

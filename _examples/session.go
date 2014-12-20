@@ -1,4 +1,4 @@
-// Copyright 2014 The gorest Authors. All rights reserved.
+// Copyright 2014 The orujo Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -10,9 +10,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/jroimartin/gorest"
-	restlog "github.com/jroimartin/gorest/handlers/log"
-	"github.com/jroimartin/gorest/handlers/sessions"
+	"github.com/jroimartin/orujo"
+	restlog "github.com/jroimartin/orujo/handlers/log"
+	"github.com/jroimartin/orujo/handlers/sessions"
 )
 
 var sessionHandler sessions.SessionHandler
@@ -22,12 +22,12 @@ const logLine = `{{.Req.RemoteAddr}} - {{.Req.Method}} {{.Req.RequestURI}}
 {{end}}`
 
 func main() {
-	s := gorest.NewServer("localhost:8080")
+	s := orujo.NewServer("localhost:8080")
 
 	logger := log.New(os.Stdout, "[SESSION] ", log.LstdFlags)
 	logHandler := restlog.NewLogHandler(logger, logLine)
 
-	sessionHandler = sessions.NewSessionHandler("gorest", []byte("secret"))
+	sessionHandler = sessions.NewSessionHandler("orujo", []byte("s3cre7"))
 	sessionHandler.SetOptions(&sessions.Options{
 		Path:     "/",
 		MaxAge:   3600,
@@ -35,9 +35,9 @@ func main() {
 	})
 
 	s.Route("/",
-		gorest.M(sessionHandler),
+		orujo.M(sessionHandler),
 		http.HandlerFunc(homeHandler),
-		gorest.M(logHandler),
+		orujo.M(logHandler),
 	)
 
 	log.Fatalln(s.ListenAndServe())
@@ -47,7 +47,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	sessionId, err := sessionHandler.SessionID(r)
 	if err != nil {
 		internalServerError(w)
-		gorest.RegisterError(w, err)
+		orujo.RegisterError(w, err)
 	}
 	fmt.Fprintln(w, "SessionID:", sessionId)
 }

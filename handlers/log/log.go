@@ -1,9 +1,9 @@
-// Copyright 2014 The gorest Authors. All rights reserved.
+// Copyright 2014 The orujo Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
 /*
-Package log implements the bult-in logging handler of gorest.
+Package log implements the bult-in logging handler of orujo.
 */
 package log
 
@@ -13,10 +13,10 @@ import (
 	"net/http"
 	"text/template"
 
-	"github.com/jroimartin/gorest"
+	"github.com/jroimartin/orujo"
 )
 
-// A LogHandler is a gorest built-in handler that provides
+// A LogHandler is a orujo built-in handler that provides
 // logging features.
 type LogHandler struct {
 	log  *log.Logger
@@ -53,7 +53,7 @@ type LogHandler struct {
 //     {{range  $err := .Errors}}  Err: {{$err}}
 //     {{end}}`
 //     logger := log.New(os.Stdout, "[SESSION] ", log.LstdFlags)
-//     logHandler := restlog.NewLogHandler(logger, logLine)
+//     logHandler := orujolog.NewLogHandler(logger, logLine)
 func NewLogHandler(logger *log.Logger, fmt string) LogHandler {
 	tmpl := template.Must(template.New("fmt").Parse(fmt))
 	return LogHandler{log: logger, tmpl: tmpl}
@@ -61,7 +61,7 @@ func NewLogHandler(logger *log.Logger, fmt string) LogHandler {
 
 // ServeHTTP will execute the log template when the handler is used.
 func (h LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	errors := gorest.Errors(w)
+	errors := orujo.Errors(w)
 	data := struct {
 		Resp   http.ResponseWriter
 		Req    *http.Request
