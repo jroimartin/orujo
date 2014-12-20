@@ -45,10 +45,10 @@ Let me answer both questions with a single example:
 ```go
 s := NewServer("localhost:8080")
 s.Route(`/hello/\w+`,
-	basicHandler,
-	http.HandlerFunc(helloHandler),
+	authHandler,
+	myHandler,
 	orujo.M(logHandler),
-)
+).Methods("GET", "POST")
 ```
 
 In this example we are registering a new route, defined by the
@@ -57,7 +57,7 @@ HTTP methods "GET" and "POST". Besides that, this route is also linked to the
 following pipe of handlers:
 
 ```
-basicHandler --> rootHandler --> M(logHandler)
+authHandler --> myHandler --> M(logHandler),
 ```
 
 A pipe is a sequence of handlers that will be executed until one of the handlers
