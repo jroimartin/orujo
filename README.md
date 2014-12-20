@@ -33,19 +33,6 @@ func main() {
 }
 ```
 
-## http.Handler
-
-One of the main goals behind Orujo is standarization. Due to this, the handlers
-accepted by Orujo must satisfy the interface http.Handler. This way, everything
-that already wotks with the Go's standard library must work with Orujo. For
-instance, the Orujo's logging handler only implements the method ServeHTTP:
-
-```go
-func (h LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	...
-}
-```
-
 ## Routes and Pipes
 
 Some of the first questions that come to my mind are the following:
@@ -78,6 +65,19 @@ explicitly calls the function ResponseWriter.WriteHeader(). From that moment
 only mandatory handlers get executed. In this example, the only mandatory
 handler in the pipe would be "logHandler", which was marked as mandatory using
 the helper function M().
+
+## http.Handler
+
+One of the main goals behind Orujo is standarization. Due to this, the handlers
+accepted by Orujo must satisfy the interface http.Handler. This way, everything
+that already wotks with the Go's standard library must work with Orujo. For
+instance, the Orujo's logging handler only implements the method ServeHTTP:
+
+```go
+func (h LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	...
+}
+```
 
 ## Installation
 
