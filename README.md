@@ -78,6 +78,13 @@ func (h LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
+A repository with handlers ready to use with Orujo can be found
+[here](https://github.com/jroimartin/orujo-handlers).
+
+```go
+import "github.com/jroimartin/orujo-handlers/<name>"
+```
+
 ## Installation
 
 `go get github.com/jroimartin/orujo`
