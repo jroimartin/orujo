@@ -21,7 +21,7 @@ following snippet:
 	func main() {
 		s := orujo.NewServer("localhost:8080")
 
-		s.Route("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		s.Route(`^/$`, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(w, "Hello world!")
 		}))
 
