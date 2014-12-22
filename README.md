@@ -25,7 +25,7 @@ import (
 func main() {
 	s := orujo.NewServer("localhost:8080")
 
-	s.Route("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	s.Route(`^/$`, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "Hello world!")
 	}))
 
@@ -44,7 +44,7 @@ Let me answer both questions with a single example:
 
 ```go
 s := orujo.NewServer("localhost:8080")
-s.Route(`/hello/\w+`,
+s.Route(`^/private/.*`,
 	authHandler,
 	myHandler,
 	orujo.M(logHandler),
