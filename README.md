@@ -52,7 +52,7 @@ s.Route(`^/private/.*`,
 ```
 
 In this example we are registering a new route, defined by the
-[regular expresion](http://golang.org/pkg/regexp/) `/hello/\w+` and the valid
+[regular expression](http://golang.org/pkg/regexp/) `^/private/.*` and the valid
 HTTP methods "GET" and "POST". Besides that, this route is also linked to the
 following pipe of handlers:
 
