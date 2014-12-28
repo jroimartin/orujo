@@ -35,7 +35,7 @@ func main() {
 
 ## Routes and Pipes
 
-Some of the first questions that come to my mind are the following:
+Some of the first questions that maybe come to your mind are:
 
 * How can I define a route?
 * How can I link several actions/middlewares with a route?
