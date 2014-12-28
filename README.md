@@ -57,7 +57,7 @@ HTTP methods "GET" and "POST". Besides that, this route is also linked to the
 following pipe of handlers:
 
 ```
-authHandler --> myHandler --> M(logHandler),
+authHandler --> myHandler --> M(logHandler)
 ```
 
 A pipe is a sequence of handlers that will be executed until one of the handlers
