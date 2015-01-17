@@ -19,8 +19,8 @@ type Server struct {
 }
 
 // NewServer returns a new Sever that will listen on addr.
-func NewServer(addr string) Server {
-	var s Server
+func NewServer(addr string) *Server {
+	s := &Server{}
 	s.Addr = addr
 	s.mux = http.NewServeMux()
 	s.router = newRouter()
@@ -30,14 +30,14 @@ func NewServer(addr string) Server {
 
 // ListenAndServe listens on the TCP network address s.Addr and then
 // handles requests on incoming connections.
-func (s Server) ListenAndServe() error {
+func (s *Server) ListenAndServe() error {
 	return http.ListenAndServe(s.Addr, s.mux)
 }
 
 // ListenAndServeTLS acts identically to ListenAndServe, except that it
 // expects HTTPS connections. For more information see the documentation
 // of the package net/http.
-func (s Server) ListenAndServeTLS(certFile string, keyFile string) error {
+func (s *Server) ListenAndServeTLS(certFile string, keyFile string) error {
 	return http.ListenAndServeTLS(s.Addr, certFile, keyFile, s.mux)
 }
 
@@ -51,12 +51,12 @@ func (s Server) ListenAndServeTLS(certFile string, keyFile string) error {
 // The handlers pipe is executed sequentially until a HTTP header is
 // explicitally written in the response. Besides that, mandatory handlers
 // are always executed.
-func (s Server) Route(path string, handlers ...http.Handler) *Route {
+func (s *Server) Route(path string, handlers ...http.Handler) *Route {
 	return s.router.handle(path, newPipe(handlers...))
 }
 
 // RouteDefault sets the default route. This handler is used if any other
 // route matches the request URI.
-func (s Server) RouteDefault(handlers ...http.Handler) {
+func (s *Server) RouteDefault(handlers ...http.Handler) {
 	s.router.defaultRoute = newPipe(handlers...)
 }
