@@ -40,7 +40,7 @@ func worldHandler(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-In this example, we are linking the route `/private/` with the following pipe
+In this example, we are linking the route `/hello/` with the following pipe
 of handlers:
 
 ```
