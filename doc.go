@@ -3,10 +3,10 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package orujo implements a minimalist web framework, which
-has been designed to work seamlessly with the standard
-net/http library. A simple hello world would look like the
-following snippet:
+Package orujo solves a common problem, which is the execution of several
+middlewares per route. It has been designed to work seamlessly with the
+standard net/http library. A simple hello world would look like the following
+snippet:
 
 	package main
 
@@ -19,13 +19,20 @@ following snippet:
 	)
 
 	func main() {
-		s := orujo.NewServer("localhost:8080")
+		http.Handle("/hello", orujo.NewPipe(
+			http.HandlerFunc(helloHandler),
+			orujo.M(http.HandlerFunc(worldHandler)),
+		))
+		log.Fatal(http.ListenAndServe(":8080", nil))
+	}
 
-		s.Route(`^/$`, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintln(w, "Hello world!")
-		}))
+	func helloHandler(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprint(w, "Hello, ")
+	}
 
-		log.Fatalln(s.ListenAndServe())
+	func worldHandler(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "world")
 	}
 */
 package orujo
