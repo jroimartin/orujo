@@ -66,11 +66,11 @@ func (h LogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-A repository with handlers ready to use with Orujo can be found
-[here](https://github.com/jroimartin/orujo-handlers).
+Some ready-to-use handlers are present in this repo (e.g. basic auth, logging,
+sessions). They can be used via:
 
 ```go
-import "github.com/jroimartin/orujo-handlers/<name>"
+import "github.com/jroimartin/orujo/<handler_name>"
 ```
 
 ## Installation
